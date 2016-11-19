@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_spash_screen"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/splash_screen"
+    tools:context="com.waqasansari.trackme.activities.SplashScreen">
+
+    <ImageView
+        android:id="@+id/imgMainLogo"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_centerInParent="true"
+        android:src="@drawable/icon_logo"/>
+
+    <com.hanks.htextview.HTextView
+        android:id="@+id/txtAppName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        android:layout_below="@+id/imgMainLogo"
+        android:layout_centerHorizontal="true"
+        android:textSize="35sp"
+        android:textStyle="bold"
+        android:textColor="@color/colorPrimary"
+        app:animateType="line"/>
+
+</RelativeLayout>

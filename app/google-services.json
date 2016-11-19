@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "949655863020",
+    "firebase_url": "https://trackme-db977.firebaseio.com",
+    "project_id": "trackme-db977",
+    "storage_bucket": "trackme-db977.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:949655863020:android:87c8b50cae40f983",
+        "android_client_info": {
+          "package_name": "com.waqasansari.trackme"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "949655863020-r1egngvi1o9svuvag2p6niv3jd5hdp98.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBjXdRElhslv_hCM7-w9VmG6mDia_xJEak"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

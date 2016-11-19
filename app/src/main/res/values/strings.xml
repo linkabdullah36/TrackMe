@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">TrackMe</string>
+    <string name="email">Email (abc@gmail.com)</string>
+    <string name="password">Password</string>
+    <string name="sign_in">Sign In</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="don_t_have_an_account">Don\'t have an account?</string>
+    <string name="imei_number">IMEI Number</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="title_activity_main">Map</string>
+    <string name="search">Search</string>
+    <string name="sign_up_with">Sign Up with your Gmail Account</string>
+    <string name="username">Username</string>
+    <string name="username_text">Username</string>
+    <string name="cancel">Cancel</string>
+    <string name="send_request">Send Request</string>
+    <string name="request_location">Request Location</string>
+    <string name="request">REQUEST</string>
+    <string name="reject">Reject</string>
+    <string name="accept">Accept</string>
+</resources>
