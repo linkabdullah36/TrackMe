@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="bottom"
-    sothree:umanoPanelHeight="36dp"
+    sothree:umanoPanelHeight="40dp"
     sothree:umanoShadowHeight="4dp">
 
     <RelativeLayout
@@ -33,41 +33,68 @@
             android:layout_height="match_parent"
             tools:layout="@layout/abc_action_bar_title_item" />
 
+        <View
+            android:id="@+id/viewCover"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"/>
+
     </RelativeLayout>
 
     <LinearLayout
-        android:layout_width="150dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center|top"
-        android:orientation="vertical">
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:background="@color/colorPrimary"
+        android:padding="8dp">
+
+        <TextView
+            android:id="@+id/txtCurrentMapView"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:textSize="20sp"
+            android:textColor="@color/textColor"
+            android:text="@string/normal_view"/>
 
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Satellite View"/>
+            android:id="@+id/btnNormalView"
+            android:layout_width="150dp"
+            android:layout_height="40dp"
+            style="?android:attr/buttonBarStyle"
+            android:background="@color/textColor"
+            android:textColor="@color/colorPrimary"
+            android:text="@string/normal_view"/>
 
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Normal View"/>
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Satellite View"/>
+            android:id="@+id/btnSatelliteView"
+            android:layout_width="150dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="2dp"
+            style="?android:attr/buttonBarStyle"
+            android:background="@color/textColor"
+            android:textColor="@color/colorPrimary"
+            android:text="@string/satellite_view"/>
 
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Normal View"/>
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Satellite View"/>
+            android:id="@+id/btnTerrainView"
+            android:layout_width="150dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="2dp"
+            style="?android:attr/buttonBarStyle"
+            android:background="@color/textColor"
+            android:textColor="@color/colorPrimary"
+            android:text="@string/terrain_view"/>
 
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Normal View"/>
+            android:id="@+id/btnHybridView"
+            android:layout_width="150dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="2dp"
+            style="?android:attr/buttonBarStyle"
+            android:background="@color/textColor"
+            android:textColor="@color/colorPrimary"
+            android:text="@string/hybrid_view"/>
 
     </LinearLayout>
 

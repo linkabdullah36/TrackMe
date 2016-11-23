@@ -18,4 +18,8 @@
     <string name="request">REQUEST</string>
     <string name="reject">Reject</string>
     <string name="accept">Accept</string>
+    <string name="normal_view">Normal View</string>
+    <string name="satellite_view">Satellite View</string>
+    <string name="hybrid_view">Hybrid View</string>
+    <string name="terrain_view">Terrain View</string>
 </resources>

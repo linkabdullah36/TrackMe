@@ -23,7 +23,8 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".activities.SignIn"
-            android:configChanges="keyboard|orientation" />
+            android:configChanges="keyboard|orientation"
+            android:noHistory="true"/>
         <activity
             android:name=".activities.SignUp"
             android:noHistory="true" />
@@ -55,7 +56,7 @@
             android:enabled="true" />
 
         <activity android:name=".activities.Dummy" />
-        <activity android:name=".activities.SplashScreen">
+        <activity android:name=".activities.SplashScreen" android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -87,6 +87,14 @@ public class SignIn extends AppCompatActivity {
                 startActivity(new Intent(SignIn.this, SignUp.class));
             }
         });
+
+        if(Utility.isUserStored(SignIn.this)) {
+            String[] detail = Utility.restoreUser(SignIn.this);
+            Config.USERNAME = detail[0];
+            Config.EMAIL = detail[1];
+            Config.PASSWORD = detail[2];
+            startActivity(new Intent(SignIn.this, Main.class));
+        }
     }
 
     @Override
@@ -157,6 +165,8 @@ public class SignIn extends AppCompatActivity {
                                 Config.EMAIL = user.getEmail();
                                 Config.PASSWORD = user.getPassword();
                                 Config.USERNAME = username;
+
+                                Utility.storeUser(Config.USERNAME, Config.EMAIL, Config.PASSWORD, SignIn.this);
                                 startActivity(new Intent(SignIn.this, Main.class));
                             } else Toast.makeText(SignIn.this, "Password is incorrect", Toast.LENGTH_SHORT).show();
                         } else

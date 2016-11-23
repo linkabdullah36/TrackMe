@@ -17,6 +17,9 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -24,6 +27,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.waqasansari.trackme.R;
 import com.waqasansari.trackme.dialog.RequestAntiTheftPermission;
 import com.waqasansari.trackme.dialog.RequestLocation;
@@ -35,10 +39,13 @@ import java.util.Calendar;
 import fr.quentinklein.slt.LocationTracker;
 import fr.quentinklein.slt.TrackerSettings;
 
-public class Main extends AppCompatActivity implements OnMapReadyCallback {
+public class Main extends AppCompatActivity implements OnMapReadyCallback, View.OnClickListener {
 
     private GoogleMap mMap;
     private LocationTracker locationTracker;
+
+    SlidingUpPanelLayout panelLayout;
+    TextView txtCurrentMapView;
 
     //private List<LatLng> latLngList;
     //Polyline line;
@@ -80,6 +87,25 @@ public class Main extends AppCompatActivity implements OnMapReadyCallback {
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 15.0f), 3000, null);
         } else setupLocationTracker();
 
+        panelLayout = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
+        txtCurrentMapView = (TextView) findViewById(R.id.txtCurrentMapView);
+        findViewById(R.id.btnNormalView).setOnClickListener(this);
+        findViewById(R.id.btnSatelliteView).setOnClickListener(this);
+        findViewById(R.id.btnTerrainView).setOnClickListener(this);
+        findViewById(R.id.btnHybridView).setOnClickListener(this);
+
+        findViewById(R.id.viewCover).setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if (panelLayout.getPanelState() != SlidingUpPanelLayout.PanelState.COLLAPSED)
+                {
+                    panelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+                    return true;
+                }
+
+                return false;
+            }
+        });
 
         /*
         FirebaseOptions options = new FirebaseOptions.Builder()
@@ -122,7 +148,7 @@ public class Main extends AppCompatActivity implements OnMapReadyCallback {
                 .setUseGPS(true)
                 .setUseNetwork(true)
                 .setUsePassive(true)
-                .setTimeBetweenUpdates(1000 * 60)
+                .setTimeBetweenUpdates(1000 * 5)
                 .setMetersBetweenUpdates(10);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -244,5 +270,31 @@ public class Main extends AppCompatActivity implements OnMapReadyCallback {
             builder.show();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.btnNormalView:
+                mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+                txtCurrentMapView.setText("Normal View");
+                panelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+                break;
+            case R.id.btnSatelliteView:
+                mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+                txtCurrentMapView.setText("Satellite View");
+                panelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+                break;
+            case R.id.btnTerrainView:
+                mMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
+                txtCurrentMapView.setText("Terrain View");
+                panelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+                break;
+            case R.id.btnHybridView:
+                mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+                txtCurrentMapView.setText("Hybrid View");
+                panelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+                break;
+        }
     }
 }

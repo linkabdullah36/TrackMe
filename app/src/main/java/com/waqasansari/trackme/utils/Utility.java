@@ -55,7 +55,7 @@ public class Utility {
                 HttpURLConnection connection = (HttpURLConnection) (new URL("http://clients3.google.com/generate_204")).openConnection();
                 connection.setRequestProperty("User-Agent", "Test");
                 connection.setRequestProperty("Connection", "close");
-                connection.setReadTimeout(1500);
+                connection.setReadTimeout(2000);
                 connection.connect();
                 return (connection.getResponseCode() == 204 && connection.getContentLength() == 0);
             } catch (IOException e){
@@ -105,7 +105,34 @@ public class Utility {
 
 
 
-    public static void cacheUser(String username, String email, String password) {
+    public static void storeUser(String username, String email, String password, Context context) {
+        String USER_FILE = "user";
+        SharedPreferences.Editor editor = context.getSharedPreferences(USER_FILE, Context.MODE_PRIVATE).edit();
+        editor
+                .putBoolean("is_stored", true)
+                .putString("username", username)
+                .putString("email", email)
+                .putString("password", password);
 
+        editor.apply();
+    }
+
+    public static boolean isUserStored(Context context) {
+        String USER_FILE = "user";
+        SharedPreferences preferences = context.getSharedPreferences(USER_FILE, Context.MODE_PRIVATE);
+
+        return preferences.getBoolean("is_stored", false);
+    }
+
+    public static String[] restoreUser(Context context) {
+        String USER_FILE = "user";
+        SharedPreferences preferences = context.getSharedPreferences(USER_FILE, Context.MODE_PRIVATE);
+
+        String detail[] = new String[3];
+        detail[0] = preferences.getString("username", null);
+        detail[1] = preferences.getString("email", null);
+        detail[2] = preferences.getString("password", null);
+
+        return detail;
     }
 }
