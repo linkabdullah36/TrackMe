@@ -63,45 +63,69 @@ public class HandleRequests extends Service {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     if (snapshot.getKey().equals(Config.USERNAME)) {
                         Requests requests = snapshot.getValue(Requests.class);
+
                         if (Utility.isRequestStored(HandleRequests.this)) {
                             Requests storedRequest = Utility.restoreFromDevice(HandleRequests.this);
-                            if (!requests.equals(storedRequest)) {
+                            if(requests.getLocation_request() != null || requests.getAnti_theft_permission() != null) {
+
+                                boolean nullCheck = true;
+                                //place some working check here!
                                 if (!requests.getLocation_request().equals(storedRequest.getLocation_request())) {
                                     //location request
-                                    String name = requests.getLocation_request().replace(storedRequest.getLocation_request(), "").trim().replaceAll(",", "");
-                                    if (storedRequest.getAccepted_location_request().contains(name)) {
-                                        //update location and stop service
-                                        updateLocation();
-                                        requests.setLocation_request(requests.getLocation_request().replace(name, ""));
-                                        Map<String, Object> map = new HashMap<>();
-                                        map.put(Utility.LOCATION_REQUEST, requests.getLocation_request());
-                                        Config.DATABASE_REFERENCE.child("user-data").child(Config.USERNAME).updateChildren(map);
-                                        Utility.storeOnDevice(requests, HandleRequests.this);
+                                    String name;
+                                    if(storedRequest.getLocation_request() == null && !requests.getLocation_request().contains("|"))
+                                        name = requests.getLocation_request();
+                                    else name = requests.getLocation_request().replace(storedRequest.getLocation_request(), "").replace("|", "");
+
+                                    if(storedRequest.getAccepted_location_request() != null) {
+                                        if (storedRequest.getAccepted_location_request().contains(name)) {
+                                            //update location and stop service
+                                            updateLocation();
+                                            requests.setLocation_request(requests.getLocation_request().replace(name, ""));
+                                            Map<String, Object> map = new HashMap<>();
+                                            map.put(Utility.LOCATION_REQUEST, requests.getLocation_request());
+                                            Config.DATABASE_REFERENCE.child("user-data").child(Config.USERNAME).updateChildren(map);
+                                        } else {
+                                            showNotification("New Location Request",
+                                                    name.toUpperCase() + " sent you a request to access your location",
+                                                    requests, name);
+                                        }
                                     } else {
                                         showNotification("New Location Request",
                                                 name.toUpperCase() + " sent you a request to access your location",
                                                 requests, name);
                                     }
 
-                                } else if (!requests.getAnti_theft_permission().equals(storedRequest.getAnti_theft_permission())) {
+
+                                }
+                                if (!requests.getAnti_theft_permission().equals(storedRequest.getAnti_theft_permission())) {
                                     //anti theft request
-                                    String name = requests.getAnti_theft_permission().replace(storedRequest.getAnti_theft_permission(), "").trim().replaceAll(",", "");
-                                    if (storedRequest.getAccepted_anti_theft_permission().contains(name)) {
-                                        //send pictures and stop service
-                                        sendPicture(name);
-                                        requests.setAnti_theft_permission(requests.getAnti_theft_permission().replace(name, ""));
-                                        Map<String, Object> map = new HashMap<>();
-                                        map.put(Utility.ANTI_THEFT_PERMISSION, requests.getAnti_theft_permission());
-                                        Config.DATABASE_REFERENCE.child("user-data").child(Config.USERNAME).updateChildren(map);
-                                        Utility.storeOnDevice(requests, HandleRequests.this);
+                                    String name = requests.getAnti_theft_permission().replace(storedRequest.getAnti_theft_permission(), "").trim().replaceAll("|", "");
+
+                                    if(storedRequest.getAccepted_anti_theft_permission() != null) {
+                                        if (storedRequest.getAccepted_anti_theft_permission().contains(name)) {
+                                            //send pictures and stop service
+                                            sendPicture(name);
+                                            requests.setAnti_theft_permission(requests.getAnti_theft_permission().replace(name, ""));
+                                            Map<String, Object> map = new HashMap<>();
+                                            map.put(Utility.ANTI_THEFT_PERMISSION, requests.getAnti_theft_permission());
+                                            Config.DATABASE_REFERENCE.child("user-data").child(Config.USERNAME).updateChildren(map);
+                                            Utility.storeOnDevice(requests, HandleRequests.this);
+                                        } else {
+                                            showNotification("New Special Request",
+                                                    name.toUpperCase() + " sent you a request to have Special Permission",
+                                                    requests, name);
+                                        }
                                     } else {
                                         showNotification("New Special Request",
                                                 name.toUpperCase() + " sent you a request to have Special Permission",
                                                 requests, name);
                                     }
+
                                 }
                             }
                         } else Utility.storeOnDevice(requests, HandleRequests.this);
+
                     }
                 }
                 stopSelf();

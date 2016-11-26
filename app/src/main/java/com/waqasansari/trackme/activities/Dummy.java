@@ -99,8 +99,8 @@ public class Dummy extends AppCompatActivity {
                     StringBuilder stringBuilder = new StringBuilder();
                     stringBuilder.append(requests.getAccepted_location_request());
                     int length = stringBuilder.length();
-                    if(stringBuilder.charAt(length-1) != ',')
-                        stringBuilder.append(',');
+                    if(stringBuilder.charAt(length-1) != '|')
+                        stringBuilder.append('|');
 
                     stringBuilder.append(name);
 
@@ -117,7 +117,7 @@ public class Dummy extends AppCompatActivity {
                     StringBuilder stringBuilder = new StringBuilder();
                     stringBuilder.append(requests.getAccepted_anti_theft_permission());
                     int length = stringBuilder.length();
-                    if(stringBuilder.charAt(length-1) != ',')
+                    if(stringBuilder.charAt(length-1) != '|')
                         stringBuilder.append(',');
 
                     stringBuilder.append(name);

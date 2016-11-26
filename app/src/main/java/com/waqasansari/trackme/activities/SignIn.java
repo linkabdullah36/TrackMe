@@ -34,41 +34,6 @@ public class SignIn extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
 
-        if (ContextCompat.checkSelfPermission(SignIn.this,
-                Manifest.permission.READ_EXTERNAL_STORAGE)
-                        != PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(SignIn.this,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                        != PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(SignIn.this,
-                        Manifest.permission.ACCESS_COARSE_LOCATION)
-                        != PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(SignIn.this,
-                        Manifest.permission.ACCESS_FINE_LOCATION)
-                        != PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(SignIn.this,
-                        Manifest.permission.CAMERA)
-                        != PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(SignIn.this,
-                        Manifest.permission.READ_PHONE_STATE)
-                        != PackageManager.PERMISSION_GRANTED) {
-
-
-            // No explanation needed, we can request the permission.
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                ActivityCompat.requestPermissions(SignIn.this,
-                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                                Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION,
-                                Manifest.permission.CAMERA,
-                                Manifest.permission.READ_PHONE_STATE},
-                        1);
-            }
-        }
-
-
-
-        Config.initializeFirebase(this);
 
         edtUsername = (EditText) findViewById(R.id.edtUsername);
         edtPassword = (EditText) findViewById(R.id.edtPassword);
@@ -95,31 +60,8 @@ public class SignIn extends AppCompatActivity {
             Config.PASSWORD = detail[2];
             startActivity(new Intent(SignIn.this, Main.class));
         }
-    }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        // If request is cancelled, the result arrays are empty.
-        if (grantResults.length > 0) {
-            for (int grantResult : grantResults) {
-                if (grantResult == PackageManager.PERMISSION_GRANTED){
-
-                } else {
-                    Toast.makeText(SignIn.this, "Some of app\'s functions do need permissions. We are sorry for not proceeding further.", Toast.LENGTH_SHORT).show();
-                    finish();
-                    return;
-                }
-
-            }
-
-        } else {
-
-            // permission denied, boo! Disable the
-            // functionality that depends on this permission.
-            Toast.makeText(SignIn.this, "Some of app\'s functions need permissions. We are sorry for not proceeding further.", Toast.LENGTH_SHORT).show();
-            finish();
-        }
+        Config.initializeFirebase(this);
     }
 
 
