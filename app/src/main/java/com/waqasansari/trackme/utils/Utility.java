@@ -135,4 +135,20 @@ public class Utility {
 
         return detail;
     }
+
+    public static void clearAllCache(Context context) {
+        String USER_FILE = "user";
+        String REQUEST_FILE = "request";
+
+        SharedPreferences.Editor editor = context.getSharedPreferences(USER_FILE, Context.MODE_PRIVATE).edit();
+        editor.clear();
+        editor.putBoolean("is_stored", false);
+        editor.apply();
+
+        editor = context.getSharedPreferences(REQUEST_FILE, Context.MODE_PRIVATE).edit();
+        editor.clear();
+        editor.putBoolean("is_stored", false);
+        editor.apply();
+
+    }
 }

@@ -14,15 +14,11 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.hanks.htextview.HTextView;
 import com.waqasansari.trackme.R;
 
 public class SplashScreen extends AppCompatActivity implements Animation.AnimationListener {
     ImageView imgLogo;
     Animation animZoomIn;
-
-    int permissionCount = 0;
-    HTextView txtAppName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,11 +81,9 @@ public class SplashScreen extends AppCompatActivity implements Animation.Animati
     }
 
     private void proceed() {
-        txtAppName = (HTextView) findViewById(R.id.txtAppName);
         imgLogo = (ImageView) findViewById(R.id.imgMainLogo);
         animZoomIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.zoom_in);
         animZoomIn.setAnimationListener(SplashScreen.this);
-        txtAppName.setText("TrackMe");
         imgLogo.startAnimation(animZoomIn);
     }
 

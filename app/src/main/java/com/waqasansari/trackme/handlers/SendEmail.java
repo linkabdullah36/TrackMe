@@ -81,8 +81,11 @@ public class SendEmail extends AsyncTask<Void, Void, Void> {
             // Create the message part
             BodyPart messageBodyPart = new MimeBodyPart();
 
+
+            String latAndLong[] = Config.LOCATION.split("_");
             // Fill the message
-            messageBodyPart.setText(message);
+            messageBodyPart.setText(message +
+                                "\nLocation: https://www.google.com/maps/place/" + latAndLong[0] + "," + latAndLong[1]);
 
             // Create a multipart message
             Multipart multipart = new MimeMultipart("mixed");
@@ -123,7 +126,6 @@ public class SendEmail extends AsyncTask<Void, Void, Void> {
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
-        Toast.makeText(context, "Email Sent", Toast.LENGTH_SHORT).show();
     }
 
 }

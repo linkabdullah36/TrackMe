@@ -22,9 +22,12 @@ import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
-import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 import com.waqasansari.trackme.handlers.SendEmail;
+import com.waqasansari.trackme.model.User;
 import com.waqasansari.trackme.utils.Config;
 
 import java.io.File;
@@ -141,14 +144,28 @@ public class CaptureImage extends Service {
 
 
         if(intent.getExtras() != null) {
-            email = intent.getStringExtra("email");
+            String name = intent.getStringExtra("name");
+            Config.DATABASE_REFERENCE.child("user-data").child(name).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    User user = dataSnapshot.getValue(User.class);
+                    email = user.getEmail();
+
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            readyCamera();
+                        }
+                    }).run();
+
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
         }
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                readyCamera();
-            }
-        }).run();
 
         return super.onStartCommand(intent, flags, startId);
     }
@@ -187,7 +204,6 @@ public class CaptureImage extends Service {
      */
     private void processImage(Image image){
         //Process image data
-        Toast.makeText(this, "Image Captured", Toast.LENGTH_SHORT).show();
         FileOutputStream fos = null;
         Bitmap bitmap = null;
         try {
@@ -232,7 +248,6 @@ public class CaptureImage extends Service {
                 File file = new File(Environment.getExternalStorageDirectory(), name);
                 fos = new FileOutputStream(file);
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-                Toast.makeText(this, "Image saved in" + Environment.getExternalStorageDirectory() + name, Toast.LENGTH_SHORT).show();
                 Config.capturedBitmaps.add(Environment.getExternalStorageDirectory() + "/" + name);
                 image.close();
             }

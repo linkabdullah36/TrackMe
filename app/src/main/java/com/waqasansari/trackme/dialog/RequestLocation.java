@@ -103,21 +103,17 @@ public class RequestLocation extends Dialog {
                 }
 
                 if(check) {
+                    if(desiredUser.getLocation_request() == null) desiredUser.setLocation_request("");
+
                     if(desiredUser.getLocation_request().contains(key)) {
                         Toast.makeText(getContext(), "Your previous request is not accepted yet.", Toast.LENGTH_SHORT).show();
                         return;
                     }
-                    if (desiredUser.getLocation_request() == null)
-                        desiredUser.setLocation_request(Config.USERNAME);
-                    else
-                        desiredUser.setLocation_request(desiredUser.getLocation_request() + "," + Config.USERNAME);
 
-                    HashMap<String, Object> params = new HashMap<>();
-                    params.put(Utility.LOCATION_REQUEST, desiredUser.getLocation_request());
-
-                    Config.DATABASE_REFERENCE.child("user-data").child(key).updateChildren(params);
-                    if (desiredUser.getLocation_request().contains(Config.USERNAME)) {
-                        new GetAndShowLocation(key, getContext()).execute();
+                    if(desiredUser.getAccepted_location_request() == null) desiredUser.setAccepted_location_request("");
+                    if (desiredUser.getAccepted_location_request().contains(Config.USERNAME)) {
+                        new GetAndShowLocation(key, getContext()).getLocationAndStartActivity();
+                        Toast.makeText(getContext(), "You'll shortly be shown location on a Map", Toast.LENGTH_SHORT).show();
                     } else {
                         AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
                         alertDialog.setTitle("Request Sent");
@@ -128,7 +124,21 @@ public class RequestLocation extends Dialog {
                                 dialogInterface.dismiss();
                             }
                         });
+                        alertDialog.show();
                     }
+
+
+
+                    if (desiredUser.getLocation_request() == null || desiredUser.getLocation_request().equals(""))
+                        desiredUser.setLocation_request(Config.USERNAME);
+                    else
+                        desiredUser.setLocation_request(desiredUser.getLocation_request() + "|" + Config.USERNAME);
+
+                    HashMap<String, Object> params = new HashMap<>();
+                    params.put(Utility.LOCATION_REQUEST, desiredUser.getLocation_request());
+
+                    Config.DATABASE_REFERENCE.child("user-data").child(key).updateChildren(params);
+
                 } else Toast.makeText(getContext(), "Email you provided has not been registered yet.", Toast.LENGTH_SHORT).show();
             }
 

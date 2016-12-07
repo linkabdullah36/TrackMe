@@ -29,12 +29,17 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.waqasansari.trackme.R;
+import com.waqasansari.trackme.dialog.Logout;
 import com.waqasansari.trackme.dialog.RequestAntiTheftPermission;
 import com.waqasansari.trackme.dialog.RequestLocation;
 import com.waqasansari.trackme.services.CaptureImage;
 import com.waqasansari.trackme.services.HandleRequests;
+import com.waqasansari.trackme.utils.Config;
+import com.waqasansari.trackme.utils.Utility;
 
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 import fr.quentinklein.slt.LocationTracker;
 import fr.quentinklein.slt.TrackerSettings;
@@ -80,12 +85,7 @@ public class Main extends AppCompatActivity implements OnMapReadyCallback, View.
         alarm.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 30*1000, pendingIntent);
 
 
-        if(getIntent().getExtras() != null) {
-            LatLng currentLocation = new LatLng(getIntent().getDoubleExtra("latitude", 0.0), getIntent().getDoubleExtra("longitude", 0.0));
-
-            mMap.addMarker(new MarkerOptions().position(currentLocation).title(getIntent().getStringExtra("name")));
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 15.0f), 3000, null);
-        } else setupLocationTracker();
+        setupLocationTracker();
 
         panelLayout = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
         txtCurrentMapView = (TextView) findViewById(R.id.txtCurrentMapView);
@@ -169,6 +169,11 @@ public class Main extends AppCompatActivity implements OnMapReadyCallback, View.
                     mMap.addMarker(new MarkerOptions().position(currentLocation).title("Current Location"));
                     mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 15.0f), 3000, null);
                 locationTracker.stopListening();
+
+
+                Map<String, Object> map = new HashMap<>();
+                map.put("location", String.valueOf(location.getLatitude()) + "_" + location.getLongitude());
+                Config.DATABASE_REFERENCE.child("user-data").child(Config.USERNAME).updateChildren(map);
                 //}
 
                 //latLngList.add(currentLocation);
@@ -241,7 +246,20 @@ public class Main extends AppCompatActivity implements OnMapReadyCallback, View.
             // for ActivityCompat#requestPermissions for more details.
             return;
         }
-        locationTracker.startListening();
+
+        if(getIntent().getExtras() != null) {
+            LatLng currentLocation = new LatLng(Double.valueOf(getIntent().getStringExtra("latitude")), Double.valueOf(getIntent().getStringExtra("longitude")));
+
+            Config.LOCATION = getIntent().getStringExtra("latitude") + "_" + getIntent().getStringExtra("longitude");
+
+            mMap.clear();
+
+            getSupportActionBar().setTitle(getIntent().getStringExtra("name") + "'s Location");
+
+            mMap.addMarker(new MarkerOptions().position(currentLocation).title(getIntent().getStringExtra("name")));
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 15.0f), 3000, null);
+
+        } else locationTracker.startListening();
     }
 
     @Override
@@ -253,7 +271,7 @@ public class Main extends AppCompatActivity implements OnMapReadyCallback, View.
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == R.id.action_request) {
-            final CharSequence[] items = {"Location Request", "Special Request", "Cancel     "};
+            final CharSequence[] items = {"Location Request", "Special Request", "Cancel"};
             final AlertDialog.Builder builder = new AlertDialog.Builder(Main.this);
             builder.setTitle("Select option");
             builder.setItems(items, new DialogInterface.OnClickListener() {
@@ -268,6 +286,8 @@ public class Main extends AppCompatActivity implements OnMapReadyCallback, View.
                 }
             });
             builder.show();
+        } else if(item.getItemId() == R.id.action_logout) {
+            new Logout(Main.this).show();
         }
         return super.onOptionsItemSelected(item);
     }

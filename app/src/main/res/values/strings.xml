@@ -15,11 +15,13 @@
     <string name="cancel">Cancel</string>
     <string name="send_request">Send Request</string>
     <string name="request_location">Request Location</string>
-    <string name="request">REQUEST</string>
+    <string name="request">Request</string>
     <string name="reject">Reject</string>
     <string name="accept">Accept</string>
     <string name="normal_view">Normal View</string>
     <string name="satellite_view">Satellite View</string>
     <string name="hybrid_view">Hybrid View</string>
     <string name="terrain_view">Terrain View</string>
+    <string name="title_activity_user_location">Map</string>
+    <string name="logout">Logout</string>
 </resources>

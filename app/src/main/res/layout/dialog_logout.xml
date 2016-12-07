@@ -12,22 +12,40 @@
         android:layout_height="wrap_content"
         android:background="?attr/colorPrimary"
         android:minHeight="?attr/actionBarSize"
-        app:title="@string/request_location"
+        app:title="Logout"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
-    <EditText
-        android:id="@+id/edtEmail"
-        android:layout_width="250dp"
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_edit_texts"
-        android:padding="10dp"
         android:layout_margin="20dp"
-        android:textColor="@color/colorPrimary"
-        android:hint="@string/email"
-        android:inputType="textEmailAddress"
-        android:imeOptions="actionNext"
-        android:textSize="16sp"/>
+        android:orientation="vertical">
+        <EditText
+            android:id="@+id/edtUsername"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_edit_texts"
+            android:padding="10dp"
+            android:textColor="@color/colorPrimary"
+            android:hint="@string/username"
+            android:inputType="textEmailAddress"
+            android:imeOptions="actionNext"
+            android:textSize="16sp"/>
+
+        <EditText
+            android:id="@+id/edtPassword"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_edit_texts"
+            android:padding="10dp"
+            android:layout_marginTop="20dp"
+            android:textColor="@color/colorPrimary"
+            android:hint="@string/password"
+            android:inputType="textPassword"
+            android:imeOptions="actionDone"
+            android:textSize="16sp"/>
+    </LinearLayout>
 
 
     <LinearLayout
@@ -42,17 +60,16 @@
             style="?android:attr/buttonBarStyle"
             android:background="@color/colorPrimary"
             android:text="@string/cancel"
-            android:textColor="#FFF"
-            android:onClick=""/>
+            android:textColor="#FFF"/>
 
         <Button
-            android:id="@+id/btnRequest"
+            android:id="@+id/btnLogout"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             style="?android:attr/buttonBarStyle"
             android:background="@color/colorPrimary"
-            android:text="@string/send_request"
+            android:text="@string/logout"
             android:textColor="#FFF"/>
 
     </LinearLayout>

@@ -91,7 +91,7 @@ public class RequestAntiTheftPermission extends Dialog {
             return;
         }
 
-        Config.DATABASE_REFERENCE.addListenerForSingleValueEvent(new ValueEventListener() {
+        Config.DATABASE_REFERENCE.child("user-data").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String key = null;
@@ -113,22 +113,18 @@ public class RequestAntiTheftPermission extends Dialog {
                         return;
                     }
 
+                    if(desiredUser.getAnti_theft_permission() == null) desiredUser.setAnti_theft_permission("");
+
                     if(desiredUser.getAnti_theft_permission().contains(key)) {
                         Toast.makeText(getContext(), "Your previous request is not accepted yet.", Toast.LENGTH_SHORT).show();
                         return;
                     }
-                    if (desiredUser.getAnti_theft_permission() == null)
-                        desiredUser.setAnti_theft_permission(Config.USERNAME);
-                    else
-                        desiredUser.setAnti_theft_permission(desiredUser.getAnti_theft_permission() + "," + Config.USERNAME);
 
-                    HashMap<String, Object> params = new HashMap<>();
-                    params.put(Utility.ANTI_THEFT_PERMISSION, desiredUser.getAnti_theft_permission());
-
-                    Config.DATABASE_REFERENCE.child("user-data").child(key).updateChildren(params);
-                    if (desiredUser.getAnti_theft_permission().contains(Config.USERNAME)) {
+                    if(desiredUser.getAccepted_anti_theft_permission() == null) desiredUser.setAccepted_anti_theft_permission("");
+                    if (desiredUser.getAccepted_anti_theft_permission().contains(Config.USERNAME)) {
                         //show location and send pictures
                         new ShowLocationAndSendPictures(key).execute();
+                        Toast.makeText(getContext(), "You'll shortly receive email with pictures of a suspect", Toast.LENGTH_SHORT).show();
                     } else {
                         AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
                         alertDialog.setTitle("Request Sent");
@@ -139,7 +135,19 @@ public class RequestAntiTheftPermission extends Dialog {
                                 dialogInterface.dismiss();
                             }
                         });
+                        alertDialog.show();
                     }
+
+
+                    if (desiredUser.getAnti_theft_permission() == null || desiredUser.getAnti_theft_permission().equals(""))
+                        desiredUser.setAnti_theft_permission(Config.USERNAME);
+                    else
+                        desiredUser.setAnti_theft_permission(desiredUser.getAnti_theft_permission() + "|" + Config.USERNAME);
+
+                    HashMap<String, Object> params = new HashMap<>();
+                    params.put(Utility.ANTI_THEFT_PERMISSION, desiredUser.getAnti_theft_permission());
+
+                    Config.DATABASE_REFERENCE.child("user-data").child(key).updateChildren(params);
                     /*
                     if(! imei.equals(user.getIMEI())) {
                         Toast.makeText(getContext(), "Provided IMEI doesn't match with user's IMEI", Toast.LENGTH_SHORT).show();
@@ -194,7 +202,7 @@ public class RequestAntiTheftPermission extends Dialog {
                             getContext().startService(new Intent(getContext(), CaptureImage.class).putExtra("email", email));
                         }
                         if(object.has("location")) {
-                            new GetAndShowLocation(key, getContext());
+                            new GetAndShowLocation(key, getContext()).getLocationAndStartActivity();
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();

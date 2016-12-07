@@ -1,91 +1,102 @@
-package com.waqasansari.trackme.activities;
+package com.waqasansari.trackme.dialog;
 
-import android.Manifest;
+import android.app.Activity;
+import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.AsyncTask;
-import android.os.Build;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.FirebaseOptions;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.waqasansari.trackme.R;
-import com.waqasansari.trackme.utils.Config;
+import com.waqasansari.trackme.activities.Main;
+import com.waqasansari.trackme.activities.SignIn;
 import com.waqasansari.trackme.model.User;
+import com.waqasansari.trackme.utils.Config;
 import com.waqasansari.trackme.utils.Utility;
 
-public class SignIn extends AppCompatActivity {
-    EditText edtUsername, edtPassword;
+/**
+ * Created by WaqasAhmed on 12/7/2016.
+ */
+
+public class Logout extends Dialog {
+    private EditText edtUsername, edtPassword;
+    Context context;
+
+    public Logout(Context context) {
+        super(context);
+        this.context = context;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sign_in);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        setContentView(R.layout.dialog_logout);
 
+        findViewById(R.id.btnCacnel).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onCancel();
+            }
+        });
 
+        findViewById(R.id.btnLogout).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onLogout();
+            }
+        });
+
+    }
+
+    private void onCancel(){
+        this.dismiss();
+    }
+
+    private void onLogout() {
         edtUsername = (EditText) findViewById(R.id.edtUsername);
         edtPassword = (EditText) findViewById(R.id.edtPassword);
 
+        final String email = edtUsername.getText().toString();
 
-        findViewById(R.id.btnSignIn).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //startActivity(new Intent(SignIn.this, Main.class));
-                new CheckInternetAndSignIn().execute();
-            }
-        });
-        findViewById(R.id.txtSignUp).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(SignIn.this, SignUp.class));
-            }
-        });
-
-        if(getIntent().getExtras() != null) {
-            if(getIntent().getBooleanExtra("logout", false))
-                return;
+        if(email.isEmpty()) {
+            Toast.makeText(context, "Please provide Username", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if(edtPassword.getText().toString().isEmpty()) {
+            Toast.makeText(context, "Please provide password to logout.", Toast.LENGTH_SHORT).show();
+            return;
         }
 
-        if(Utility.isUserStored(SignIn.this)) {
-            String[] detail = Utility.restoreUser(SignIn.this);
-            Config.USERNAME = detail[0];
-            Config.EMAIL = detail[1];
-            Config.PASSWORD = detail[2];
-            startActivity(new Intent(SignIn.this, Main.class));
-        }
-
-        Config.initializeFirebase(this);
+        new CheckInternetAndLogout().execute();
     }
 
 
-    private class CheckInternetAndSignIn extends AsyncTask<Void, Void, Boolean>{
+
+    private class CheckInternetAndLogout extends AsyncTask<Void, Void, Boolean> {
         ProgressDialog dialog;
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            dialog = new ProgressDialog(SignIn.this);
+            dialog = new ProgressDialog(context);
             dialog.setTitle("Please Wait...");
-            dialog.setMessage("Signing in");
+            dialog.setMessage("Logging out");
             dialog.setCancelable(false);
             dialog.show();
         }
 
         @Override
         protected Boolean doInBackground(Void... voids) {
-            return Utility.hasActiveInternetConnection(SignIn.this);
+            return Utility.hasActiveInternetConnection(context);
         }
 
         @Override
@@ -113,11 +124,13 @@ public class SignIn extends AppCompatActivity {
                                 Config.PASSWORD = user.getPassword();
                                 Config.USERNAME = username;
 
-                                Utility.storeUser(Config.USERNAME, Config.EMAIL, Config.PASSWORD, SignIn.this);
-                                startActivity(new Intent(SignIn.this, Main.class));
-                            } else Toast.makeText(SignIn.this, "Password is incorrect", Toast.LENGTH_SHORT).show();
+                                Utility.storeUser(Config.USERNAME, Config.EMAIL, Config.PASSWORD, context);
+                                Utility.clearAllCache(context);
+                                context.startActivity(new Intent(context, SignIn.class).putExtra("logout", true));
+                                ((Activity) context).finish();
+                            } else Toast.makeText(context, "Password is incorrect", Toast.LENGTH_SHORT).show();
                         } else
-                            Toast.makeText(SignIn.this, "User not found", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, "User not found", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
@@ -125,7 +138,7 @@ public class SignIn extends AppCompatActivity {
 
                     }
                 });
-            } else Toast.makeText(SignIn.this, "Make sure you have active internet connection", Toast.LENGTH_SHORT).show();
+            } else Toast.makeText(context, "Make sure you have active internet connection", Toast.LENGTH_SHORT).show();
             dialog.dismiss();
         }
     }

@@ -15,16 +15,4 @@
         android:layout_centerInParent="true"
         android:src="@drawable/icon_logo"/>
 
-    <com.hanks.htextview.HTextView
-        android:id="@+id/txtAppName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="15dp"
-        android:layout_below="@+id/imgMainLogo"
-        android:layout_centerHorizontal="true"
-        android:textSize="35sp"
-        android:textStyle="bold"
-        android:textColor="@color/colorPrimary"
-        app:animateType="line"/>
-
 </RelativeLayout>

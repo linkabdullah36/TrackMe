@@ -19,6 +19,8 @@ public class Config {
     public static String PASSWORD;
     public static String USERNAME;
 
+    public static String LOCATION = null;
+
     public static List<String> capturedBitmaps = new ArrayList<>();
 
     public static String APP_ID = "1:949655863020:android:87c8b50cae40f983";

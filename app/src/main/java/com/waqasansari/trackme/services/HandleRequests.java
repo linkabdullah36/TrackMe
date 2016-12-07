@@ -44,6 +44,8 @@ import fr.quentinklein.slt.TrackerSettings;
 
 public class HandleRequests extends Service {
     private LocationTracker locationTracker;
+    private boolean checkToSendPicture = false;
+    private String txtName;
 
     public HandleRequests() {
     }
@@ -66,14 +68,12 @@ public class HandleRequests extends Service {
 
                         if (Utility.isRequestStored(HandleRequests.this)) {
                             Requests storedRequest = Utility.restoreFromDevice(HandleRequests.this);
-                            if(requests.getLocation_request() != null || requests.getAnti_theft_permission() != null) {
 
-                                boolean nullCheck = true;
-                                //place some working check here!
-                                if (!requests.getLocation_request().equals(storedRequest.getLocation_request())) {
-                                    //location request
+                            if(requests.getLocation_request() != null) {
+                                if(storedRequest.getLocation_request() == null) storedRequest.setLocation_request("");
+                                if(! requests.getLocation_request().equals(storedRequest.getLocation_request())) {
                                     String name;
-                                    if(storedRequest.getLocation_request() == null && !requests.getLocation_request().contains("|"))
+                                    if(storedRequest.getLocation_request().equals(""))
                                         name = requests.getLocation_request();
                                     else name = requests.getLocation_request().replace(storedRequest.getLocation_request(), "").replace("|", "");
 
@@ -96,16 +96,25 @@ public class HandleRequests extends Service {
                                                 requests, name);
                                     }
 
-
+                                    Utility.storeOnDevice(requests, HandleRequests.this);
                                 }
-                                if (!requests.getAnti_theft_permission().equals(storedRequest.getAnti_theft_permission())) {
-                                    //anti theft request
-                                    String name = requests.getAnti_theft_permission().replace(storedRequest.getAnti_theft_permission(), "").trim().replaceAll("|", "");
+                            }
+
+                            if(requests.getAnti_theft_permission() != null) {
+                                if(storedRequest.getAnti_theft_permission() == null) storedRequest.setAnti_theft_permission("");
+                                if(! requests.getAnti_theft_permission().equals(storedRequest.getAnti_theft_permission())) {
+                                    String name;
+
+                                    if(storedRequest.getAnti_theft_permission().equals(""))
+                                        name = requests.getAnti_theft_permission();
+                                    else name = requests.getAnti_theft_permission().replace(storedRequest.getAnti_theft_permission(), "").replace("|", "");
 
                                     if(storedRequest.getAccepted_anti_theft_permission() != null) {
                                         if (storedRequest.getAccepted_anti_theft_permission().contains(name)) {
                                             //send pictures and stop service
-                                            sendPicture(name);
+                                            checkToSendPicture = true;
+                                            txtName = name;
+                                            updateLocation();
                                             requests.setAnti_theft_permission(requests.getAnti_theft_permission().replace(name, ""));
                                             Map<String, Object> map = new HashMap<>();
                                             map.put(Utility.ANTI_THEFT_PERMISSION, requests.getAnti_theft_permission());
@@ -121,9 +130,10 @@ public class HandleRequests extends Service {
                                                 name.toUpperCase() + " sent you a request to have Special Permission",
                                                 requests, name);
                                     }
-
+                                    Utility.storeOnDevice(requests, HandleRequests.this);
                                 }
                             }
+
                         } else Utility.storeOnDevice(requests, HandleRequests.this);
 
                     }
@@ -186,7 +196,8 @@ public class HandleRequests extends Service {
         TrackerSettings settings = new TrackerSettings()
                 .setUseGPS(true)
                 .setUseNetwork(true)
-                .setUsePassive(true);
+                .setUsePassive(true)
+                .setTimeBetweenUpdates(3000);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
@@ -201,6 +212,13 @@ public class HandleRequests extends Service {
         locationTracker = new LocationTracker(this, settings) {
             @Override
             public void onLocationFound(@NonNull Location location) {
+
+                if(checkToSendPicture) {
+                    checkToSendPicture = false;
+                    Config.LOCATION = String.valueOf(location.getLatitude() + "_" + location.getLongitude());
+                    sendPicture(txtName);
+                }
+
                 Map<String, Object> values = new HashMap<>();
                 values.put("location", String.valueOf(location.getLatitude() + "_" + location.getLongitude()));
                 Config.DATABASE_REFERENCE.child("user-data").child(Config.USERNAME).updateChildren(values);
@@ -215,24 +233,6 @@ public class HandleRequests extends Service {
     }
 
     private void sendPicture(final String name) {
-        Config.DATABASE_REFERENCE.child("user-data").child(name).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                try {
-                    JSONObject object = new JSONObject(dataSnapshot.getValue().toString());
-                    if(object.has("email")) {
-                        String email = object.getString("email");
-                        startService(new Intent(HandleRequests.this, CaptureImage.class).putExtra("email", email));
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
+        startService(new Intent(HandleRequests.this, CaptureImage.class).putExtra("name", name));
     }
 }

@@ -97,15 +97,19 @@ public class Dummy extends AppCompatActivity {
 
                 if(title.equals("New Location Request")) {
                     StringBuilder stringBuilder = new StringBuilder();
-                    stringBuilder.append(requests.getAccepted_location_request());
-                    int length = stringBuilder.length();
-                    if(stringBuilder.charAt(length-1) != '|')
-                        stringBuilder.append('|');
+                    if(requests.getAccepted_location_request() != null) {
+                        stringBuilder.append(requests.getAccepted_location_request());
+                        int length = stringBuilder.length();
+                        if(stringBuilder.charAt(length-1) != '|')
+                            stringBuilder.append('|');
+                    }
 
                     stringBuilder.append(name);
 
                     requests.setAccepted_location_request(stringBuilder.toString());
                     requests.setLocation_request(requests.getLocation_request().replace(name, ""));
+
+                    Utility.storeOnDevice(requests, Dummy.this);
 
                     Map<String, Object> map = new HashMap<>();
                     map.put(Utility.LOCATION_REQUEST, requests.getLocation_request());
@@ -115,15 +119,19 @@ public class Dummy extends AppCompatActivity {
 
                 } else if(title.equals("New Special Request")) {
                     StringBuilder stringBuilder = new StringBuilder();
-                    stringBuilder.append(requests.getAccepted_anti_theft_permission());
-                    int length = stringBuilder.length();
-                    if(stringBuilder.charAt(length-1) != '|')
-                        stringBuilder.append(',');
+                    if(requests.getAccepted_anti_theft_permission() != null) {
+                        stringBuilder.append(requests.getAccepted_anti_theft_permission());
+                        int length = stringBuilder.length();
+                        if(stringBuilder.charAt(length-1) != '|')
+                            stringBuilder.append('|');
+                    }
 
                     stringBuilder.append(name);
 
                     requests.setAccepted_anti_theft_permission(stringBuilder.toString());
                     requests.setAnti_theft_permission(requests.getLocation_request().replace(name, ""));
+
+                    Utility.storeOnDevice(requests, Dummy.this);
 
                     Map<String, Object> map = new HashMap<>();
                     map.put(Utility.ANTI_THEFT_PERMISSION, requests.getAnti_theft_permission());
