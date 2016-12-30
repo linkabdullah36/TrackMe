@@ -119,6 +119,7 @@ public class SignUp extends AppCompatActivity {
                                     Config.PASSWORD = edtPwd.getText().toString();
                                     Config.USERNAME = username;
                                     Toast.makeText(SignUp.this, "Successfully Signed up.", Toast.LENGTH_SHORT).show();
+                                    Utility.storeUser(Config.USERNAME, Config.EMAIL, Config.PASSWORD, SignUp.this);
                                     startActivity(new Intent(SignUp.this, Main.class));
                                 }
                             });

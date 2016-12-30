@@ -26,6 +26,8 @@ import com.waqasansari.trackme.utils.Config;
 import com.waqasansari.trackme.model.User;
 import com.waqasansari.trackme.utils.Utility;
 
+import java.util.List;
+
 public class SignIn extends AppCompatActivity {
     EditText edtUsername, edtPassword;
 
@@ -66,7 +68,18 @@ public class SignIn extends AppCompatActivity {
             startActivity(new Intent(SignIn.this, Main.class));
         }
 
-        Config.initializeFirebase(this);
+        boolean hasBeenInitialized=false;
+        List<FirebaseApp> firebaseApps = FirebaseApp.getApps(this);
+        for(FirebaseApp app : firebaseApps){
+            if(app.getName().equals(FirebaseApp.DEFAULT_APP_NAME)){
+                hasBeenInitialized=true;
+            }
+        }
+
+        if(!hasBeenInitialized) {
+            Config.initializeFirebase(this);
+        }
+
     }
 
 
